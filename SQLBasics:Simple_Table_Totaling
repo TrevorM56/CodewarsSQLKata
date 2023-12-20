@@ -15,10 +15,8 @@
 # you must replace it with [no clan specified], you must sum the total_points for each clan and the total_people within that clan.
 
 # ##Note The data is loaded from the live leaderboard, this means values will change but also could cause the kata to time out retreiving the information.
-
-
-
-
+ 
+# MY SOLUTION:
 
 SELECT
   RANK() OVER(ORDER BY SUM(points) DESC) AS rank,
