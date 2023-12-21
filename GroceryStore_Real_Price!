@@ -1,0 +1,40 @@
+# You are the owner of the Grocery Store. All your products are in the database, that you have created after CodeWars SQL exercises! 
+
+# Customer often need to now how much really they pay for the products. Manufacturers make different sizes of same product so it is hard to compare prices, sometimes they make packages look big, but the weight of the product is small.
+
+# Make a SELECT query which will tell the price per kg of the product.
+
+# Weight is in grams! Round the price_per_kg to 2 decimal places.
+
+# Order results by price_per_kg ascending, then by name ascending.
+
+# Products table schema:
+#   id (int)
+#   name (string)
+#   price (float)
+#   stock (int)
+#   weight (float)
+#   producer (string)
+#   country (string)
+
+# Results table schema:
+#   name (string)
+#   weight (float)
+#   price (float)
+#   price_per_kg (float)
+
+# My Solution:
+
+SELECT
+  name,
+  weight,
+  price,
+  ROUND((price*1000/weight)::NUMERIC, 2)::FLOAT AS price_per_kg
+FROM
+  products
+ORDER BY
+  price_per_kg ASC,
+  name ASC;
+
+# To find the weight per kilogram, I divided the price by the weight. Since the weight was in grams, 
+# I multiplied the prices by 1000 to create the inverse of running price divided by (weight / 1000)
