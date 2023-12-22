@@ -1,0 +1,20 @@
+# Write a function that checks if a given string (case insensitive) is a palindrome.
+
+# A palindrome is a word, number, phrase, or other sequence of symbols that reads the same backwards as forwards, such as madam or racecar.
+# write your SQL statement here: you are given a table 'ispalindrome' with column 'str', return a table with column 'str' and your result in a column named 'res'.
+
+# My solution: 
+UPDATE ispalindrome
+  SET str = LOWER(str);
+
+SELECT
+  str,
+  CASE 
+    WHEN REVERSE(str) = str THEN True
+    ELSE False
+  END AS res
+FROM ispalindrome;
+
+# I started by updating the table and setting all values, with the SET keyword, in the str column to lowercase with the LOWER() method
+# Next, I used a case statement to test the reverse of the string to the newly lowercase string by using the REVERSE() method.
+# If the equation matched, it returned TRUE, as the reverse of the string matched the initial string.
