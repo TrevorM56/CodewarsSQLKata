@@ -1,0 +1,37 @@
+# Oh no! Timmys been moved into the database divison of his software company but as we know Timmy loves making mistakes. Help Timmy keep his job by fixing his query...
+
+# Timmy works for a statistical analysis company and has been given a task of totaling the number of sales on a given day grouped by each department name and then each day.
+
+# Resultant table:
+#  day (type: date) {group by} [order by asc]
+#  department (type: text) {group by} [In a real world situation it is bad practice to name a column after a table]
+#  sale_count (type: int)
+
+# Query to be fixed:
+SELECT 
+  s.transaction_date as day,
+  d.name,
+  COUNT(s.id)
+  FROM department d
+    JOIN sale s on d.id = s.id
+  group by day, d.name
+  order by name desc
+
+# My Solution
+SELECT 
+  DATE(s.transaction_date) AS day,
+  (d.name) AS department,
+  COUNT(s.id) AS sale_count
+FROM 
+  department AS d
+INNER JOIN sale AS s ON
+  d.id = s.department_id
+GROUP BY
+  day,
+  d.name
+ORDER BY
+  day ASC
+
+# First, we must extract the date from the transcaction_date in order to group by the date. The inital query did not do this.
+# Next, the departments fall under the name column of the department table, so I updated the query to change the column name from name to department.
+# Lastly, we ordered by the day column to ensure that the results were grouped properly and ordered by the earliest date.
