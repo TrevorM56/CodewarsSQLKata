@@ -1,0 +1,24 @@
+# Introduction
+# The first century spans from the year 1 up to and including the year 100, the second century - from the year 101 up to and including the year 200, etc.
+
+# Task
+# Given a year, return the century it is in.
+
+# Examples
+#  1705 --> 18
+#  1900 --> 19
+#  1601 --> 17
+#  2000 --> 20
+
+# In SQL, you will be given a table years with a column yr for the year. Return a table with a column century.
+
+# Note: this kata uses strict construction as shown in the description.
+
+# My Solution:
+SELECT
+  FLOOR((yr + 99) / 100) AS century
+FROM years
+
+# I chose to add 99 to the given year value and divided by 100 to get the value for century. This works because any given year ending between 1 and 99 will 
+# add up to the next set of hundred years. For example, in year 1803, if we add 99, we get 1902. 1902 divided by 100 gives us 19.02. With the FLOOR() method,
+# it rounds down to 19, giving us the 19th century.
