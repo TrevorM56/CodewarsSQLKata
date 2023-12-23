@@ -86,3 +86,7 @@ GROUP BY
     (EXTRACT('year' FROM p.payment_date)))
 ORDER BY 
   month ASC, revenue DESC, category ASC;
+
+# For this kata, I had to get the year and month (as int) from the payment_date column. To do this, I used the EXTRACT() method to pull the specified section from the payment_date.
+# Next, I used the FLOOR() method with the SUM() of the amount to get the revenue rounded down, and used the :: operator to cast the result as an integer.
+# For the table setup, I used GROUPING SETS method to generate the three requested GROUP BYs into a single statement.
