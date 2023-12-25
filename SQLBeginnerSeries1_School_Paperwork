@@ -7,8 +7,13 @@
 # n= 5, m=5: 25
 # n=-5, m=5:  0
 
+# write your SQL statement here: you are given a table 'paperwork' with columns 'id', 'n' and 'm', return a table with columns 'n', 'm' and your result in a column named 'res'.
 # My Solution:
-function paperwork(n, m) {
-  let blankPages;
-  return (n > 0 && m > 0) ? blankPages = n * m : blankPages = 0;    
-}
+SELECT
+  n,
+  m,
+  CASE
+    WHEN n < 0 OR m < 0 THEN 0
+    ELSE n * m
+  END AS res
+FROM paperwork;
