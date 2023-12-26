@@ -43,3 +43,6 @@ WHERE
 ORDER BY
   title ASC,
   film_id ASC;
+
+# For this kata, I needed to use an array of the needed features in order to generate a table that contained only Trailers and Deleted Scenes in the special_features.
+# Each array provides an avenue as to how the needed features could appear within the table.
