@@ -1,0 +1,20 @@
+# DESCRIPTION:
+# In this task, you will work with a PostgreSQL database that contains a table named ip_addresses. This table has two columns, id (an integer that uniquely identifies each row) and ip (a string that contains an IP address). Some of the IP addresses have leading zeros.
+# Your task is to write a SQL query that returns each id and its associated IP address, but with all leading zeros removed from the IP address. The result should be a new column named cleaned_ip.
+
+# Notes:
+#  The IP addresses in the table are guaranteed to be valid and always contain exactly four octets, separated by dots. Note that an octet with all zeros (e.g., 000) should be transformed into 0, not removed entirely.
+#  The result should be ordered by id in descending order.
+
+# GLHF!
+
+# MY SOLUTION
+SELECT
+  id,
+  CAST(ip AS INET) AS cleaned_ip
+FROM
+  ip_addresses
+ORDER BY 
+  id DESC;
+
+# For this problem, I chose to take advantage of PostgreSQL's INET data type. This data type forces an IPv4 or IPv6 address to be represented within the address column
