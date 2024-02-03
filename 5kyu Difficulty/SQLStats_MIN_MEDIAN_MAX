@@ -1,0 +1,35 @@
+DESCRIPTION:
+For this challenge you need to create a simple SELECT statement. Your task is to calculate the MIN, MEDIAN and MAX scores of the students from the results table.
+
+# Tables and relationship below:
+# students schema:
+#   id
+#   name
+
+# score schema:
+#  id
+#  student_id
+# score
+
+# Resultant table:
+#  min
+#  median
+#  max
+
+# MY SOLUTIONS:
+
+# SOLUTION 1:
+SELECT
+  MIN(score) AS min,
+  PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY(score)):: FLOAT AS median,
+  MAX(score) AS max
+FROM
+  result;
+
+# SOLUTION 2:
+SELECT
+  MIN(score) AS min,
+  ROUND((SUM(score) / COUNT(score)), 2):: FLOAT AS median,
+  MAX(score) AS max
+FROM
+  result;
