@@ -1,0 +1,59 @@
+# DESCRIPTION:
+# Business sells only three unique products: "Product 1," "Product 2," and "Product 3."
+# Write an SQL query to find customers who have ordered "Product 1" and "Product 2" but not "Product 3." 
+# Additionally, provide a summary of how many times they have ordered the first two products.
+
+# Schema:
+# customers:
+#  customer_id (integer) - primary key
+#  name (varchar) - Name of the customer.
+
+# orders:
+#  order_id (integer) - primary key
+#  customer_id (integer) - Identifier for the customer who placed the order.
+#  product_name (varchar) - Name of the ordered product. It can only be one of the three values: "Product 1," "Product 2," or "Product 3."
+
+# Write a query that returns the following columns:
+#  customer_id: The unique identifier of the customer.
+#  name: The name of the customer.
+#  product_summary: A string that describes how many times the customer has ordered "Product 1" and "Product 2," formatted as "Product 1: {N} times || Product 2: {N} times."
+
+# The results should be ordered by customer_id in descending order.
+
+# GLHF!
+
+# Desired Output
+# The desired output should look like this:
+# customer_id	          name	                           product_summary
+#          92	     Jeri Auer	Product 1: 25 times || Product 2: 25 times
+#          83	  Chang Sporer	  Product 1: 8 times || Product 2: 8 times
+#          82	Regan Schimmel	Product 1: 15 times || Product 2: 15 times
+
+# MY SOLUTION:
+
+SELECT
+  c.customer_id,
+  c.name,
+  ('Product 1: ' || COUNT(DISTINCT o1.order_id) || ' times || '
+  'Product 2: ' || COUNT(DISTINCT o2.order_id) || ' times') AS product_summary
+FROM
+  customers AS c
+JOIN
+  orders AS o1 ON
+    c.customer_id = o1.customer_id AND
+    o1.product_name = 'Product 1'
+JOIN
+  orders AS o2 ON
+    c.customer_id = o2.customer_id AND
+    o2.product_name = 'Product 2'
+LEFT JOIN 
+  orders AS o3 ON
+    c.customer_id = o3.customer_id AND
+    o3.product_name = 'Product 3'
+WHERE
+  o3.customer_id IS NULL
+GROUP BY
+  c.customer_id,
+  c.name
+ORDER BY
+  c.customer_id DESC;
