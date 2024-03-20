@@ -1,0 +1,71 @@
+# DESCRIPTION:
+# Introduction
+#  There's a team competition going on and your task is to fetch the current team ranking. As teams can have different amounts of members, it would be unfair if huge teams had advantages over smaller teams. Therefore we are only considering the scores of the best 5 members per team. If a team consists of less than 5 members, all of its members' scores are summed up.
+
+# Task
+#  Fetch the 10 best teams with their aggregated team scores (only considering the top 5 scores per team) and also the top 5 team members each with their respective score (ordered by highest score first) within the team. See the example for details.
+
+# Requirements
+#  In order to get a deterministic result, the following rules apply
+#    Result Structure
+#      team_rank (int): the rank, starting with 1
+#      team_name (text): name of the team
+#      team_score (int): the sum of scores of the best 5 members of this team
+#      top_members (text): comma-separated list of the best 5 members (name + score)
+#    Teams
+#      the 10 best teams must be ordered by their score (highest to lowest)
+#      if two or more teams end up with the same team score, both get the same rank assigned, but the one with the lower team ID is listed first
+#      only up to 10 teams must be listed: if there are multiple teams sharing the 10th place, the one with the lower team ID must be preferred
+#    Team Members
+#      within the teams, the members must be ordered by their score (highest to lowest)
+#      if two or more members have the same score, the one with the lower ID is listed first
+#      only up to 5 members per team must be listed; if there are multiple members sharing the 5th place, the one with the lower ID must be preferred
+
+# Database Schema
+#  Table teams
+#    id (int, primary key)
+#    name (text)
+#  Table team_members
+#    id (int, primary key)
+#    team_id (int, foreign key)
+#    name (text)
+#    score (int)
+
+# Example
+# Given Data
+#   teams
+#    id	name
+#    1	Adorable Axolotl
+#    2	Brave Buffalo
+#    3	Colorful Chipmunk
+#    4	Delightful Dolphin
+
+## MY SOLUTION:
+WITH rnk AS (
+  SELECT 
+    ROW_NUMBER() OVER (PARTITION BY tm.team_id ORDER BY tm.score DESC,id) AS row_num,
+    rank() over (partition by tm.team_id order by score desc,id) "rank" ,
+    * 
+  FROM 
+    team_members AS tm 
+  ORDER BY 
+    tm.score DESC,
+    tm.id
+)
+SELECT
+  RANK() OVER (ORDER BY SUM(rnk.score) DESC) AS team_rank,
+  t.name AS team_name,
+  SUM(rnk.score) AS team_score,
+  STRING_AGG(rnk.name || ' (' || rnk.score || ')', ', ') AS top_members
+FROM 
+  teams AS t
+JOIN rnk 
+  ON rnk.team_id = t.id AND 
+  rnk.row_num <= 5 
+GROUP BY 
+  t.name,
+  t.id
+ORDER BY 
+  SUM(rnk.score) DESC,
+  t.id
+LIMIT 10;
