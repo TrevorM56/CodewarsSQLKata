@@ -1,0 +1,39 @@
+# DESCRIPTION:
+#  The objective of this Kata is to show that you are proficient at string manipulation (and perhaps that you can use extensively subqueries).
+#  You will use people table but will focus solely on the name column
+#    name
+#    Greyson Tate Lebsack Jr.
+#    Elmore Clementina O'Conner
+#  you will be provided with a full name and you have to return the name in columns as follows.
+#    name	first_lastname	second_lastname
+#    Greyson Tate	Lebsack	Jr.
+#    Elmore	Clementina	O'Conner
+#  Note: Don't forget to remove spaces around names in your result.
+#  Note: Due to multicultural context, if full name has more than 3 words, consider the last 2 as first_lastname and second_lastname, all other names belonging to name.
+
+## MY SOLUTION:
+SELECT
+  CASE
+    WHEN p.extra_name = '' AND p.extra_name2 = '' THEN p.name
+    WHEN p.extra_name2 = '' AND p.extra_name != '' THEN p.name || ' ' || p.first_lastname
+    ELSE p.name || ' ' || p.first_lastname || ' ' || p.second_lastname
+  END AS name,
+  CASE
+    WHEN p.extra_name = '' AND p.extra_name2 = '' THEN p.first_lastname
+    WHEN p.extra_name2 = '' AND p.extra_name != '' THEN p.second_lastname
+    ELSE p.extra_name
+  END AS first_lastname,
+  CASE
+    WHEN p.extra_name = '' AND p.extra_name2 = '' THEN p.second_lastname
+    WHEN p.extra_name2 = '' AND p.extra_name != '' THEN p.extra_name
+    ELSE p.extra_name2
+  END AS second_lastname
+FROM (
+  SELECT
+    SPLIT_PART(name, ' ', 1) AS name,
+    SPLIT_PART(name, ' ', 2) AS first_lastname,
+    SPLIT_PART(name, ' ', 3) AS second_lastname,
+    SPLIT_PART(name, ' ', 4) AS extra_name,
+    SPLIT_PART(name, ' ', 5) AS extra_name2
+  FROM
+    people) AS p;
