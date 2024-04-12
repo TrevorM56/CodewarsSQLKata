@@ -1,0 +1,52 @@
+# DESCRIPTION:
+#  Given a table with machine processes, write a SQL query to calculate the total downtime for each machine between its processes.
+
+# process_times:
+#  id (integer) - Primary key
+#  machine_id (integer) - Identifier for the machine.
+#  load_id (integer) - Identifier for the load/process on the machine.
+#  start_time (datetime) - The start time of the process.
+#  end_time (datetime) - The end time of the process.
+
+# Based on this sample data:
+#  | machine_id | load_id | start_time          | end_time            |
+#  +------------+---------+---------------------+---------------------|
+#  | 220        | 25      | 2023-06-24 04:29:00 | 2023-06-25 04:42:38 |
+#  | 187        | 23      | 2023-06-22 14:41:00 | 2023-06-24 00:34:32 |
+#  | 187        | 18      | 2023-06-20 11:57:00 | 2023-06-20 23:53:51 |
+#  | 187        | 17      | 2023-06-18 11:57:00 | 2023-06-19 13:23:25 |
+
+# The expected output is:
+#  | machine_id | total_down_time |
+#  +------------+-----------------|
+#  | 187        | 61:20:44        |
+#     machine_id (integer) - Identifier for the machine.
+#     total_down_time (text) - Total downtime for the machine in the format "HH:MM:SS".
+
+# Instructions:
+#  The total downtime for each machine is the sum of the time intervals between the end of a process and the start of the next one. Note that intervals for a given machine do not overlap.
+#  Exclude machines with only one process or where the processes do not have any downtime between them.
+#  Return the results sorted by their machine_id in descending order.
+# GLHF!
+
+## MY SOLUTION
+WITH lag_time AS (
+  SELECT
+    *,
+    start_time - LAG(end_time) OVER (PARTITION BY machine_id ORDER BY start_time ) AS time_interval,
+    COUNT(machine_id) OVER (PARTITION BY machine_id) AS count_machine
+  FROM
+    process_times)
+
+
+SELECT
+  machine_id,
+  EXTRACT(DAYS FROM SUM(time_interval)) * 24 + EXTRACT(HOURS FROM SUM(time_interval)) || TO_CHAR(SUM(time_interval), ':MI:SS') AS total_down_time
+FROM
+  lag_time
+WHERE
+  count_machine != 1
+GROUP BY
+  1
+ORDER BY
+  machine_id DESC;
